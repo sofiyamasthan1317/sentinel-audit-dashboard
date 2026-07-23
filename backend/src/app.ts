@@ -13,12 +13,29 @@ app.use(morgan("dev"));
 
 app.use(express.json({ limit: "10mb" }));
 
+app.get("/", (_req, res) => {
+  res.status(200).json({
+    success: true,
+    message: "SentinelAudit API is running successfully.",
+    description:
+      "A full-stack audit log monitoring and security event investigation API.",
+    endpoints: {
+      getLogs: "GET /api/logs",
+      getLogStatistics: "GET /api/logs/stats",
+      getLogById: "GET /api/logs/:id",
+      bulkJsonUpload: "POST /api/logs/bulk",
+      bulkCsvUpload: "POST /api/logs/bulk/csv",
+    },
+  });
+});
+
 app.get("/health", (_req, res) => {
   res.status(200).json({
     success: true,
-    message: "Audit Log API is running",
+    message: "SentinelAudit API is healthy and running.",
   });
 });
+
 app.use("/api/logs", logRoutes);
 
 app.use((_req, res) => {

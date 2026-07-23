@@ -4,6 +4,12 @@ A full-stack audit log monitoring and security event investigation dashboard bui
 
 SentinelAudit provides a centralized interface for ingesting, monitoring, filtering, searching, sorting, and investigating audit logs in a SIEM-inspired environment.
 
+## Live Demo
+
+- Frontend: https://sentinel-audit-dashboard.vercel.app/
+- Backend API: https://sentinel-audit-backend-a939.onrender.com
+- GitHub Repository: https://github.com/sofiyamasthan1317/sentinel-audit-dashboard
+
 ## Overview
 
 SentinelAudit is designed to demonstrate a production-oriented audit log management workflow.
@@ -20,7 +26,7 @@ The application allows users to:
 - Upload logs in bulk using CSV or JSON
 - View aggregated statistics by severity, status, and region
 
-The project consists of a React frontend and a Node.js backend connected to MongoDB.
+The project consists of a React frontend and a Node.js backend connected to MongoDB Atlas.
 
 ## Features
 
@@ -34,7 +40,7 @@ The dashboard provides a high-level overview of the audit log system, including:
 - Active regions
 - Severity distribution
 - Status summary
-- Regional breakdown
+- Regional activity visualization
 - Recent audit activity
 
 ### Audit Log Explorer
@@ -93,7 +99,7 @@ The details view provides:
 - Complete log information
 - Structured JSON representation
 - Copy-to-clipboard functionality
-- Individual log retrieval through the backend API
+- Individual log retrieval through the backend
 
 ## Technology Stack
 
@@ -113,7 +119,6 @@ The details view provides:
 - TypeScript
 - Zod
 - Mongoose
-- MongoDB
 
 ### Database
 
@@ -122,7 +127,7 @@ The details view provides:
 ## Project Structure
 
 ```text
-audit-log-dashboard/
+sentinel-audit-dashboard/
 │
 ├── frontend/
 │   ├── src/
@@ -133,9 +138,10 @@ audit-log-dashboard/
 │   │   ├── App.tsx
 │   │   └── main.tsx
 │   │
-│   ├── .env
 │   ├── .gitignore
+│   ├── .npmrc
 │   ├── package.json
+│   ├── package-lock.json
 │   └── vite.config.ts
 │
 ├── backend/
@@ -149,50 +155,72 @@ audit-log-dashboard/
 │   │   ├── validators/
 │   │   └── app.ts
 │   │
-│   ├── .env
 │   ├── .gitignore
 │   ├── package.json
+│   ├── package-lock.json
 │   └── tsconfig.json
 │
 └── README.md
+````
 
-Backend API
-Get Audit Logs
+## Backend API
+
+### Get Audit Logs
+
+```http
 GET /api/logs
+```
 
 Supported query parameters:
 
-page
-limit
-search
-severity
-status
-role
-action
-region
-resourceType
-sortBy
-sortOrder
+* `page`
+* `limit`
+* `search`
+* `severity`
+* `status`
+* `role`
+* `action`
+* `region`
+* `resourceType`
+* `sortBy`
+* `sortOrder`
 
 Example:
 
+```http
 GET /api/logs?page=1&limit=20&severity=HIGH&sortBy=timestamp&sortOrder=desc
-Get Log Statistics
+```
+
+### Get Log Statistics
+
+```http
 GET /api/logs/stats
+```
 
 Returns aggregated information including:
 
-Total log count
-Severity distribution
-Status distribution
-Regional distribution
-Get a Log by ID
+* Total log count
+* Severity distribution
+* Status distribution
+* Regional distribution
+
+### Get a Log by ID
+
+```http
 GET /api/logs/:id
-Bulk JSON Upload
+```
+
+Returns detailed information for a specific audit log.
+
+### Bulk JSON Upload
+
+```http
 POST /api/logs/bulk
+```
 
 Request body:
 
+```json
 {
   "logs": [
     {
@@ -209,11 +237,17 @@ Request body:
     }
   ]
 }
-Bulk CSV Upload
+```
+
+### Bulk CSV Upload
+
+```http
 POST /api/logs/bulk/csv
+```
 
 The CSV file must contain the following headers:
 
+```text
 actor
 role
 action
@@ -224,81 +258,121 @@ region
 severity
 status
 timestamp
-Environment Variables
-Backend
+```
 
-Create a .env file inside the backend directory:
+## Environment Variables
 
+### Backend
+
+Create a `.env` file inside the `backend` directory:
+
+```env
 PORT=5000
 MONGODB_URI=your_mongodb_connection_string
+```
 
 Example:
 
+```env
 PORT=5000
 MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/audit-log-dashboard
+```
 
-Do not commit the .env file to version control.
+Do not commit the `.env` file to version control.
 
-Frontend
+### Frontend
 
-Create a .env file inside the frontend directory:
+Create a `.env` file inside the `frontend` directory:
 
+```env
 VITE_API_BASE_URL=http://localhost:5000/api
+```
 
-For production deployment, update the value to the deployed backend API URL.
+For production deployment, configure the environment variable with the deployed backend API URL:
 
-Local Development
-Clone the Repository
-git clone <repository-url>
-cd audit-log-dashboard
-Start the Backend
+```env
+VITE_API_BASE_URL=https://sentinel-audit-backend-a939.onrender.com/api
+```
+
+## Local Development
+
+### Clone the Repository
+
+```bash
+git clone https://github.com/sofiyamasthan1317/sentinel-audit-dashboard.git
+cd sentinel-audit-dashboard
+```
+
+### Start the Backend
+
+```bash
 cd backend
 npm install
 npm run dev
+```
 
 The backend will run on:
 
+```text
 http://localhost:5000
-Start the Frontend
+```
+
+### Start the Frontend
 
 Open another terminal:
 
+```bash
 cd frontend
 npm install
 npm run dev
+```
 
 The frontend will run on:
 
+```text
 http://localhost:5173
-Production Build
-Backend
+```
+
+## Production Build
+
+### Backend
+
+```bash
 cd backend
 npm run build
+```
 
 To start the compiled backend:
 
+```bash
 npm start
-Frontend
+```
+
+### Frontend
+
+```bash
 cd frontend
 npm run build
+```
 
-The production files will be generated in the dist directory.
+The production files will be generated in the `dist` directory.
 
-Data Validation
+## Data Validation
 
 Incoming data is validated using Zod schemas before processing.
 
 Validation is applied to:
 
-Individual audit log objects
-Bulk JSON payloads
-Query parameters
-CSV upload data
+* Individual audit log objects
+* Bulk JSON payloads
+* Query parameters
+* CSV upload data
 
 Invalid requests return structured validation errors.
 
 Example:
 
+```json
 {
   "success": false,
   "message": "Validation failed",
@@ -309,12 +383,15 @@ Example:
     }
   ]
 }
-API Response Format
+```
+
+## API Response Format
 
 Successful responses follow a consistent structure.
 
 Example:
 
+```json
 {
   "success": true,
   "data": [],
@@ -325,64 +402,79 @@ Example:
     "totalPages": 0
   }
 }
+```
 
-Security Considerations
+## Security Considerations
 
-Database credentials are stored in environment variables.
-Environment files are excluded from version control.
-Input data is validated before database insertion.
-Server-side filtering and pagination are used to avoid unnecessary data transfer.
-API errors are handled through centralized middleware.
-Sensitive database credentials should never be exposed to the frontend.
+* Database credentials are stored in environment variables.
+* Environment files are excluded from version control.
+* Input data is validated before database insertion.
+* Server-side filtering and pagination are used to reduce unnecessary data transfer.
+* API errors are handled through centralized middleware.
+* Sensitive database credentials are never exposed to the frontend.
 
-Deployment Architecture
-                         ┌─────────────────────┐
-                         │                     │
-                         │      End User       │
-                         │                     │
-                         └──────────┬──────────┘
-                                    │
-                                    ▼
-                         ┌─────────────────────┐
-                         │                     │
-                         │  React Frontend     │
-                         │  Vercel / Netlify   │
-                         │                     │
-                         └──────────┬──────────┘
-                                    │
-                                    ▼
-                         ┌─────────────────────┐
-                         │                     │
-                         │  Node.js Backend    │
-                         │  Render / Railway   │
-                         │                     │
-                         └──────────┬──────────┘
-                                    │
-                                    ▼
-                         ┌─────────────────────┐
-                         │                     │
-                         │   MongoDB Atlas     │
-                         │                     │
-                         └─────────────────────┘
-Future Improvements
+## Deployment Architecture
+
+```text
+┌─────────────────────┐
+│                     │
+│      End User       │
+│                     │
+└──────────┬──────────┘
+           │
+           ▼
+┌─────────────────────────────────────┐
+│                                     │
+│       React Frontend                │
+│       Deployed on Vercel            │
+│                                     │
+│  sentinel-audit-dashboard           │
+│       .vercel.app                   │
+│                                     │
+└──────────┬──────────────────────────┘
+           │
+           ▼
+┌─────────────────────────────────────┐
+│                                     │
+│       Node.js Backend               │
+│       Deployed on Render            │
+│                                     │
+│  sentinel-audit-backend-a939        │
+│       .onrender.com                 │
+│                                     │
+└──────────┬──────────────────────────┘
+           │
+           ▼
+┌─────────────────────────────────────┐
+│                                     │
+│          MongoDB Atlas              │
+│                                     │
+│       Audit Log Database            │
+│                                     │
+└─────────────────────────────────────┘
+```
+
+## Future Improvements
 
 Potential future enhancements include:
 
-Authentication and role-based access control
-Real-time log streaming using WebSockets
-Advanced date-range filtering
-Exporting filtered logs
-Advanced audit analytics
-Chart-based historical trends
-Automated alerting for critical events
-Infrastructure and cloud provider integrations
-Automated testing and CI/CD pipelines
+* Authentication and role-based access control
+* Real-time log streaming using WebSockets
+* Advanced date-range filtering
+* Exporting filtered logs
+* Advanced audit analytics
+* Chart-based historical trends
+* Automated alerting for critical events
+* Infrastructure and cloud provider integrations
+* Automated testing
+* CI/CD pipelines
 
+## Author
 
-Author
-
-Shofiya M
+**Shofiya M**
 
 Full Stack Developer
 
-Technologies: React, Next.js, TypeScript, Node.js, Express, NestJS, MongoDB, PostgreSQL
+Technologies used in this project:
+
+React, TypeScript, Vite, Axios, Node.js, Express, Zod, Mongoose, MongoDB, and MongoDB Atlas.
