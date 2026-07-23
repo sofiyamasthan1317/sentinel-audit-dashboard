@@ -814,7 +814,7 @@ export const DashboardStats: React.FC<DashboardStatsProps> = ({
                   .slice()
                   .sort((a, b) => b.count - a.count)
                   .slice(0, 3)
-                  .map((item, index) => {
+                  .map((item) => {
                     const pct = toPct(item.count, totalLogs);
 
                     return (
